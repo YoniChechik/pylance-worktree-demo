@@ -24,62 +24,27 @@ pylance-worktree-demo/
     └── feature-b/          # Modified logger.py (added timestamps)
 ```
 
-## Setup to Reproduce
+## Reproducing the Issue
 
-### 1. Clone Repository
 ```bash
+# 1. Clone and set up worktree
 git clone https://github.com/yonichechik/pylance-worktree-demo.git
 cd pylance-worktree-demo
-```
-
-### 2. Set Up Worktree
-The branches exist remotely. Create the worktree structure locally (matches our production setup):
-
-```bash
-# Create worktree for feature-a inside the main repo
 git worktree add worktrees/feature-a feature-a
 
-# Verify it's set up correctly
-git worktree list
-```
-
-### 3. Open Worktree in VSCode
-```bash
-# Open the feature-a worktree (NOT the main repo)
+# 2. Open worktree in VSCode
 code worktrees/feature-a
 ```
 
-## Reproducing the Issue
+**3. Test navigation:**
+- Open `demo_package/algo/analyzer.py`
+- Line 7: Ctrl+Click on `process_data`
+- Check the opened file's implementation
 
-### Quick Test
-1. In the worktree, open `demo_package/algo/analyzer.py`
-2. Find line 7: `processed = process_data(data)`
-3. Ctrl+Click (or F12) on `process_data`
-4. **Expected**: Navigate to `process_data` in `worktrees/feature-a/demo_package/algo/processor.py` (which multiplies by 3)
-5. **Actual**: Navigates to `demo_package/algo/processor.py` in the **main repo** (which multiplies by 2)
+**Expected:** Opens `worktrees/feature-a/.../processor.py` (multiply by **3**)
+**Actual:** Opens main repo `processor.py` (multiply by **2**)
 
-### What Should Happen
-When working in `worktrees/feature-a/`, clicking on `process_data` should navigate to:
-```
-worktrees/feature-a/demo_package/algo/processor.py
-```
-Where the implementation multiplies by **3**.
-
-### What Actually Happens
-Pylance navigates to the **main repository**:
-```
-demo_package/algo/processor.py
-```
-Where the implementation multiplies by **2**.
-
-This proves Pylance is **ignoring workspace boundaries** and resolving symbols from the main repo instead of the current worktree.
-
-## Key Difference to Spot the Bug
-
-**Main branch** - `processor.py`: multiplies by 2
-**Feature-a** - `processor.py`: multiplies by 3
-
-When you navigate to `process_data`, check the implementation to see which version Pylance opened. If you're working in feature-a but see "multiply by 2", Pylance opened the wrong file.
+This proves Pylance ignores workspace boundaries and resolves to the main repo instead of the current worktree.
 
 ## Environment
 
