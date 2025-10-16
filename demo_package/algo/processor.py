@@ -11,11 +11,12 @@ def process_data(data: list[int], config: Config | None = None) -> list[int]:
 
     log_info(f"Processing {len(data)} items with config: {config.name}")
 
-    # Dummy processing: multiply each item by 2
-    return [x * 2 for x in data]
+    # Feature A: multiply each item by 3 instead of 2
+    return [x * 3 for x in data]
 
 
 def validate_data(data: list[int]) -> bool:
     """Validate that data meets requirements."""
     log_info(f"Validating {len(data)} items")
-    return len(data) > 0 and all(isinstance(x, int) for x in data)
+    # Feature A: stricter validation - require at least 5 items
+    return len(data) >= 5 and all(isinstance(x, int) for x in data)
