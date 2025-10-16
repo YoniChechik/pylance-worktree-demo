@@ -1,0 +1,26 @@
+[project]
+name = "demo-package"
+version = "0.1.0"
+description = "Minimal demo for Pylance worktree navigation issue"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+extend-select = ["I"]  # Enable import sorting rules
+
+[tool.mypy]
+python_version = "3.13"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -1,0 +1,34 @@
+{
+    "files.eol": "\n",
+    "files.insertFinalNewline": true,
+    "search.exclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/.mypy_cache/**": true,
+        "**/.pytest_cache/**": true,
+        "**/.ruff_cache/**": true,
+    },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/.mypy_cache/**": true,
+        "**/.pytest_cache/**": true,
+        "**/.ruff_cache/**": true,
+    },
+    "python.analysis.exclude": [
+        "**/.mypy_cache",
+        "**/.pytest_cache",
+        "**/.ruff_cache",
+    ],
+    "ruff.nativeServer": true,
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+        }
+    },
+    "git.repositoryScanMaxDepth": -1,
+    "git.autoRepositoryDetection": true,
+}
