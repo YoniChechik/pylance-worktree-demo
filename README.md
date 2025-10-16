@@ -32,53 +32,54 @@ git clone https://github.com/yonichechik/pylance-worktree-demo.git
 cd pylance-worktree-demo
 ```
 
-### 2. Worktrees Already Exist
-The worktrees are **already created** at `worktrees/feature-a` and `worktrees/feature-b`. This matches the exact structure we use in production.
+### 2. Set Up Worktree
+The branches exist remotely. Create the worktree structure locally (matches our production setup):
 
-Verify with:
 ```bash
+# Create worktree for feature-a inside the main repo
+git worktree add worktrees/feature-a feature-a
+
+# Verify it's set up correctly
 git worktree list
 ```
 
-### 3. Open in VSCode
+### 3. Open Worktree in VSCode
 ```bash
-# Open main repository
-code .
-
-# OR open a specific worktree
+# Open the feature-a worktree (NOT the main repo)
 code worktrees/feature-a
 ```
 
 ## Reproducing the Issue
 
 ### Quick Test
-1. Open `demo_package/api/endpoints.py`
-2. Ctrl+Click on `log_info` (line 6)
-3. **Expected**: Navigate to `log_info` definition in the **current** worktree
-4. **Actual**: May navigate to `log_info` in a **different** worktree (e.g., feature-b which has timestamps)
+1. In the worktree, open `demo_package/algo/analyzer.py`
+2. Find line 7: `processed = process_data(data)`
+3. Ctrl+Click (or F12) on `process_data`
+4. **Expected**: Navigate to `process_data` in `worktrees/feature-a/demo_package/algo/processor.py` (which multiplies by 3)
+5. **Actual**: Navigates to `demo_package/algo/processor.py` in the **main repo** (which multiplies by 2)
 
 ### What Should Happen
-When working in `worktrees/feature-a/`, clicking on `log_info` should navigate to:
+When working in `worktrees/feature-a/`, clicking on `process_data` should navigate to:
 ```
-worktrees/feature-a/demo_package/core/logger.py
+worktrees/feature-a/demo_package/algo/processor.py
 ```
+Where the implementation multiplies by **3**.
 
 ### What Actually Happens
-Pylance may navigate to:
-- `demo_package/core/logger.py` (main repo)
-- `worktrees/feature-b/demo_package/core/logger.py` (wrong worktree!)
+Pylance navigates to the **main repository**:
+```
+demo_package/algo/processor.py
+```
+Where the implementation multiplies by **2**.
 
-The navigation is **non-deterministic** and **ignores workspace boundaries**.
+This proves Pylance is **ignoring workspace boundaries** and resolving symbols from the main repo instead of the current worktree.
 
-## Differences Between Worktrees
-
-To see the issue clearly:
+## Key Difference to Spot the Bug
 
 **Main branch** - `processor.py`: multiplies by 2
 **Feature-a** - `processor.py`: multiplies by 3
-**Feature-b** - `logger.py`: adds timestamps to all log functions
 
-When navigating, you'll see different implementations depending on which worktree Pylance chose (incorrectly).
+When you navigate to `process_data`, check the implementation to see which version Pylance opened. If you're working in feature-a but see "multiply by 2", Pylance opened the wrong file.
 
 ## Environment
 
